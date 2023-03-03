@@ -26,7 +26,7 @@ public class Trivia {
     private HashMap<String, String> miscellaneousQuestions;
     private ArrayList<HashMap<String, String>> triviaList;
 
-
+    // Constructor initializes the different HashMaps and ArrayList
     public Trivia() {
         this.wordQuestions = new HashMap<>();
         this.miscellaneousQuestions = new HashMap<>();
@@ -47,6 +47,7 @@ public class Trivia {
         this.triviaList = new ArrayList<>();
     }
 
+    // Reads the trivia questions from a text file and puts them in their respective HashMaps
     public void readTriviaQuestions() {
         try {
             // Open the file for reading
@@ -59,17 +60,18 @@ public class Trivia {
                 // Split the line by the delimiter '", "'
                 String[] parts = line.split("\", \"");
 
-                // Trim unwanted parts from the questions in the text file
+                // Trim unwanted parts from the questions and answers in the text file
                 String question = parts[0].substring(2);
                 String answer = parts[1].substring(0, parts[1].length() - 1);
 
                 // Add the first part as the key and the second part as the value to the HashMaps
                 putTriviaQuestions(question, answer);
-                
+
             }
             // Close the file
             reader.close();
 
+            // Add the different HashMaps to the ArrayList
             formList();
 
         } catch (IOException e) {
@@ -77,6 +79,7 @@ public class Trivia {
         }
     }
 
+    // Adds the different HashMaps to the ArrayList
     public void formList() {
         triviaList.add(musicQuestions);
         triviaList.add(sportsQuestions);
@@ -98,6 +101,7 @@ public class Trivia {
 
     public void putTriviaQuestions(String question, String answer) {
         try {
+            // Categorize the question based on its starting word(s)
             if (question.startsWith("A ")) {
                 fillBlankQuestions.put(question, answer);
             } else if (question.startsWith("Art")) {
@@ -130,12 +134,15 @@ public class Trivia {
                 miscellaneousQuestions.put(question, answer);
             }
         } catch (StringIndexOutOfBoundsException e) {
+            // If there is a StringIndexOutOfBoundsException, do nothing
         }
     }
 
     public String getQuestion(int index) {
+        // Generate a random index between 0 and the size of the list at the given index
         int randomIndex = rand.nextInt(triviaList.get(index).size());
 
+        // Iterate through the map at the given index to get the question at the random index
         Iterator<String> iterator = triviaList.get(index).keySet().iterator();
         String randomQuestion = null;
         for (int i = 0; i <= randomIndex; i++) {
@@ -145,12 +152,20 @@ public class Trivia {
         return randomQuestion;
     }
 
+
     public String getAnswer(String question, int index) {
+        // Get the answer from the map at the given index of the list
         String answer = triviaList.get(index).get(question).substring(0, 1).
                 toUpperCase() + triviaList.get(index).get(question).substring(1);
+
+        // Remove the last character (if it is a double-quote)
+        // All the answers in the text file would end with a double-quote
+        // Hence why the double-quotes were trimmed earlier
+        // BUT some answers have a further double-quote
         if (answer.charAt(answer.length() - 1) == '\"') {
             answer = answer.substring(0, answer.length() - 1);
         }
+
         return answer;
     }
 
