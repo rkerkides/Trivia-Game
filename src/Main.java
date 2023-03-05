@@ -6,6 +6,10 @@ public class Main {
         // Create a new Trivia object
         Trivia trivia = new Trivia();
 
+        // remove unwanted parts from the trivia file
+        // and create a new, clean file for use within the program
+        fixTextArrangement();
+
         // Read the trivia_questions.txt file and map answers onto questions
         trivia.readTriviaQuestions();
 
