@@ -51,22 +51,28 @@ public class Trivia {
     public void readTriviaQuestions() {
         try {
             // Open the file for reading
-            BufferedReader reader = new BufferedReader(new FileReader("./resources/trivia_questions.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("resources/trivia_questions_fixed.txt"));
 
 
             // Read the file line by line
+            int lineNum = 1;
             String line;
             while ((line = reader.readLine()) != null) {
-                // Split the line by the delimiter '", "'
-                String[] parts = line.split("\", \"");
+                try {
+                    // Split the line by the delimiter "splitHere"
+                    String[] parts = line.split("splitHere");
 
-                // Trim unwanted parts from the questions and answers in the text file
-                String question = parts[0].substring(2);
-                String answer = parts[1].substring(0, parts[1].length() - 1);
+                    // Separate each line into question and answer
+                    String question = parts[0];
+                    String answer = parts[1];
 
-                // Add the first part as the key and the second part as the value to the HashMaps
-                putTriviaQuestions(question, answer);
-
+                    // Add the first part as the key and the second part as the value to the HashMaps
+                    putTriviaQuestions(question, answer);
+                } catch (Exception e) {
+                    // Catch exception if a line in the trivia file is improperly formatted
+                    System.out.println("Error in line " + lineNum + e.getMessage());
+                }
+                lineNum++;
             }
             // Close the file
             reader.close();
