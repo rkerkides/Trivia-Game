@@ -1,3 +1,5 @@
+
+
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -7,7 +9,7 @@ public class UserInterface {
     private final PlayersList playersList;
     private int playerNum;
     private boolean isFirstPlay;
-    private int categoryIndex;
+    private TriviaCategory currentCategory;
     private final String[] categories;
 
     public UserInterface(Trivia trivia) {
@@ -17,7 +19,6 @@ public class UserInterface {
         this.playerNum = 1;
         this.playersList = new PlayersList();
         this.isFirstPlay = true;
-        this.categoryIndex = 0;
         this.categories = new String[]{"Music", "Sports", "History", "Name the year", "Geography", "Food and drink", "TV/Film", "Biology"
                 , "Astronomy", "Acronyms", "Word-based", "Animals", "Art", "Fill in the blanks", "Miscellaneous"};
     }
@@ -53,58 +54,53 @@ public class UserInterface {
         }
     }
 
-    public void questionTime(Player player, int categoryIndex) {
-        // Get question from Trivia object and display it
-        String question = trivia.getQuestion(categoryIndex - 1);
+    public void questionTime(Player player, TriviaCategory category) {
+        String question = trivia.getQuestion(category);
         System.out.println(question);
-        System.out.println();
         System.out.println("Type 'a' when you are ready to view the correct answer!");
         while (!scanner.nextLine().equals("a")) {
             System.out.println("If you want to see the answer, please type 'a'!");
         }
-        // Display the correct answer and ask for user's response
-        System.out.println(trivia.getAnswer(question, categoryIndex - 1));
+
+        System.out.println(trivia.getAnswer(question, category));
         System.out.println("Did you get it right? Be honest! (y/n)");
         responseLoop(player);
     }
 
-    public int getCategory() {
+    public TriviaCategory getCategory() {
         System.out.println("Would you like to continue in the same category? y/n");
         while (true) {
             String input = scanner.nextLine();
 
             if (input.equals("y")) {
-                return categoryIndex;
+                return currentCategory;
             } else if (input.equals("n")) {
                 return categoryTime();
             } else {
                 System.out.println("Invalid input. Please input 'y' or 'n'.");
             }
         }
-
     }
 
-    public int categoryTime() {
-        // Display list of categories and ask user to choose one
+    public TriviaCategory categoryTime() {
         System.out.println("Please select a category:");
         for (int i = 0; i < categories.length; i++) {
             System.out.println((i + 1) + ". " + categories[i]);
         }
-        // Get user to choose a category and ensure it is valid
         while (true) {
             try {
-                categoryIndex = scanner.nextInt();
+                int categoryIndex = scanner.nextInt();
+                scanner.nextLine(); // consume the remaining newline character
                 if (categoryIndex < 1 || categoryIndex > 15) {
                     throw new IndexOutOfBoundsException();
                 }
-                return categoryIndex;
+                currentCategory = TriviaCategory.values()[categoryIndex - 1];
+                return currentCategory;
 
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Invalid input. Please enter a number from 1 to 15.");
-                scanner.nextLine(); // consume the remaining newline character
             } catch (Exception e) {
                 System.out.println("Invalid input. Please enter a number.");
-                scanner.nextLine(); // consume the remaining input
             }
         }
     }
